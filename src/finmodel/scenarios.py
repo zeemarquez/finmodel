@@ -4,7 +4,6 @@ from tqdm import tqdm
 from dataclasses import dataclass, field, replace, asdict
 import pandas as pd
 
-
 class Scenarios():
     def __init__(self, model:Model):
         self.model = model
