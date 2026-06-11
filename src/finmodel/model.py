@@ -1,10 +1,11 @@
-from typing import Callable, Union, Dict, Any, List, Tuple, Set, Type, overload, TypeVar
+from typing import Generic, Callable, Union, Dict, Any, List, Tuple, Set, Type, overload, TypeVar
 import pandas as pd
 from finmodel.styles import *
 import numpy as np
 
 # Define type variables to assist static analysis engines (Pylance/IntelliSense)
 M = TypeVar('M', bound='Model')
+I = TypeVar('I')
 
 class FormulaRow:
     """Descriptor pattern class managing lazy evaluation and structural arithmetic operators."""
@@ -82,18 +83,18 @@ class BoundRow:
     def __call__(self, t: int) -> Any:
         return self._model._eval_row(self._row, t)
 
-def row(group: str = None, format: Format = None, initial: Any = None) -> Callable[[Callable[[Any, int], Any]], FormulaRow]:
+def row(group: str = None, format: Format = None) -> Callable[[Callable[[Any, int], Any]], FormulaRow]:
     """
     Decorator to define a FormulaRow using a standard instance method.
     Provides 100% native IDE autocomplete (Pylance/IntelliSense) for class attributes.
     """
     def decorator(func: Callable[[Any, int], Any]) -> FormulaRow:
         # Wrap the function directly inside a FormulaRow object
-        return FormulaRow(formula=func, initial=initial, group=group, format=format)
+        return FormulaRow(formula=func, group=group, format=format)
     return decorator
 
 
-class Model:
+class Model(Generic[I]):
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         cls._declared_rows: List[FormulaRow] = []
@@ -106,7 +107,7 @@ class Model:
     def __init__(
         self, 
         periods:int,
-        inputs:Any,
+        inputs:I,
         style: Style = None,
         enable_iterative_calculation: bool = False,
         threshold: float = 1e-4,
@@ -114,7 +115,7 @@ class Model:
         damping: float = 0.5,
     ):
         self.periods = periods
-        self.inputs = inputs
+        self.inputs:I = inputs
         self.initial_period = 0
         self.style = style or PredefinedStyles.CLASSIC_LIGHT
         self.enable_iterative_calculation = enable_iterative_calculation

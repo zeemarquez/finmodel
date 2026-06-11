@@ -21,7 +21,7 @@ class Inputs:
     growth_rate: float
     cost_ratio: float
 
-class IncomeStatement(Model):
+class IncomeStatement(Model[Inputs]):
     @row(format=PredefinedFormats.CURRENCY)
     def revenue(self, t):
         if t == 0:
