@@ -183,6 +183,10 @@ class Model:
         return max_delta < self.threshold, max_delta
 
     def calculate(self):
+        self._cache = {}
+        self._prev_cache = {}
+        self._eval_stack = set()
+
         if self.enable_iterative_calculation:
             max_delta = float("inf")
             alpha = self.damping
