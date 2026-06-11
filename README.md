@@ -48,6 +48,17 @@ model.show()          # styled DataFrame (Jupyter)
 model.to_html("out.html")
 ```
 
+## Documentation & examples
+
+- **Guides** live in [`docs/`](docs/index.md): [getting started](docs/getting-started.md),
+  [core concepts](docs/concepts.md), [formatting](docs/formatting.md),
+  [styling & themes](docs/styling.md), [scenario analysis](docs/scenarios.md),
+  [iterative calculation](docs/iterative-calculation.md), and the
+  [API reference](docs/api-reference.md).
+- **Runnable notebooks** live in [`examples/`](examples/README.md), covering a
+  quickstart, a formats/themes tour, scenario sweeps, circular references, and a
+  full three-statement model.
+
 ## Key concepts
 
 ### Rows
@@ -68,14 +79,20 @@ gross_profit = revenue - cogs          # FormulaRow + FormulaRow
 
 ### Formatting
 
-| Format | Renderer |
+A `Format` controls how one row renders (its cell text plus `highlight`/`italic`
+hints). Predefined values cover the common cases:
+
+| Group | Formats |
 |---|---|
-| `PredefinedFormats.DEFAULT` | Accounting numerics (negative in parens) |
-| `PredefinedFormats.CURRENCY` | Same as DEFAULT |
-| `PredefinedFormats.PERCENTAGE` | `12.3%` |
-| `PredefinedFormats.BOOLEAN` | `TRUE` / `FALSE` with color fill |
-| `PredefinedFormats.DATE` | `dd/mm/yyyy` |
-| `PredefinedFormats.SUMMARY_HIGHLIGHT` | Bold highlighted row |
+| Numerics | `DEFAULT`, `CURRENCY`, `SIGNED` |
+| Scaled | `THOUSANDS` (`12.5K`), `MILLIONS` (`2.5M`), `BILLIONS` (`3.2B`) |
+| Currency | `USD`, `EUR`, `GBP`, `JPY` (`$1,200` / `($1,200)`) |
+| Percent / ratio | `PERCENTAGE`, `PERCENTAGE_PRECISE`, `PERCENTAGE_SIGNED`, `BASIS_POINTS` (`150 bps`), `MULTIPLE` (`2.5x`) |
+| Flags | `BOOLEAN` (`TRUE`/`FALSE` with colour fill) |
+| Emphasis | `SUMMARY_HIGHLIGHT`, `SUBTOTAL`, `TOTAL` (bold highlighted bands) |
+| Dates | `DATE` (`dd/mm/yyyy`), `DATE_LONG` (`11 Jun 2026`), `DATE_ISO` (`2026-06-11`) |
+
+Build your own with `Format(my_formatter)` — see [docs/formatting.md](docs/formatting.md).
 
 ### Themes
 
@@ -85,7 +102,9 @@ from finmodel import PredefinedStyles
 model = MyModel(periods=10, inputs=inputs, style=PredefinedStyles.JETBRAINS_DARK_THEME)
 ```
 
-Available: `CLASSIC_LIGHT`, `JETBRAINS_LIGHT_THEME`, `JETBRAINS_DARK_THEME`.
+Available: `CLASSIC_LIGHT`, `JETBRAINS_LIGHT_THEME`, `JETBRAINS_DARK_THEME`,
+`MINIMAL`, `CORPORATE_BLUE`, `EMERALD_LIGHT`, `SLATE_DARK`, `TERMINAL`, `PRINT`.
+Build your own with the `Style` class — see [docs/styling.md](docs/styling.md).
 
 ### Circular references (iterative calculation)
 
